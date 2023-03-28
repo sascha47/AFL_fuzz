@@ -88,10 +88,47 @@ We will use afl-clang-fast as the compiler. AFL compilers are like basic compile
 ```
 export CC=afl-clang-fast
 ```
+### Configure fuzzgoat as a binary
+<p>
+After cloning the respository we need to compile that application into a binary. Inside the fuzzgoat directory run the code below
+</p>
 
+```
+make
+```
+### Defining the seed input files
 
+<p> 
+ AFL uses the seed input file to input commands into the target application. The seed input files allows for AFL to mutate its commands to find new file paths within the targeth application to exploit.
+</p>
 
+<p> Start with creating and input file that will hold our test cases produced by AFL fuzz. Also create the output files that contains subdirectories: crashes for crashed results, hangs for results that causes the application to hang and a queue directory that holds results that AFL has not tested against the applicaiton. 
+</p>
 
+```
+mkdir in
+mkdir out
+
+```
+
+### To fuzz the applicatoin
+<p>
+ Key:
+ -i = specifies the directory from which the seed cases are run  (can be named anything)
+ 
+ -o = specifies the the directory where AFL stores the results for crashes, hangs and queues
+ 
+ -- = seperates the AFL flags on the left from where the target is run on the right
+ 
+@@ = This is where AFL fuzzes the application by inserts the test seed input file here. STDIN can also be used instead of @@
+</p>
+
+### Run the applicatoin
+```
+afl-fuzz -i in -o out -- ./fuzzgoat @@
+```
+ 
+ 
   
 #### Non StndInput
 ```
