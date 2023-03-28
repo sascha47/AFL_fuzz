@@ -110,6 +110,18 @@ mkdir in
 mkdir out
 
 ```
+### Before fuzzing the application
+<p>
+ We need to create an input seed that connects to our target application and is used by AFL Fuzz to  mutate commands within the target application to create new test cases. To do this we can add an binary to the in folder
+</p>
+
+```
+cp /bin/ps .../in/
+```
+<p>
+ 
+Now the in folder should have a copy of your ps binary and ready to be input against the target application
+</p>
 
 ### To fuzz the applicatoin
 <p>
@@ -127,8 +139,21 @@ mkdir out
 ```
 afl-fuzz -i in -o out -- ./fuzzgoat @@
 ```
+<p>
+After running the application watch if for a couple of minutes and then CTRL + C
  
+Navigate to /out/crashes and you should see a result similar to mine. I ran my results fo 5 minutes which could provide more or less results than you
+</p>
+
+![Results](https://github.com/sascha47/AFL_fuzz/blob/main/Crashes.PNG?raw=true)
+
+### How to rung your crashes
+
+<p>
  
+These crashes in the crashes directory are what was used by AFL FUZZ in the instrumentation or seed input to crash the binary. To run crash against your application or fuzzgoat in this instance use the non standard input method below
+ 
+</p>
   
 #### Non StndInput
 ```
@@ -137,3 +162,17 @@ afl-fuzz -i in -o out -- ./fuzzgoat @@
 
 #### Result for nonstnd input
 ![Result](https://github.com/sascha47/AFL_fuzz/blob/main/NON_stnd_input.PNG?raw=true)
+
+<p> 
+ 
+Congratuations, you have Installed AFL fuzz, the gcc-clang-fast compliers, created input seeds and found vulnerabilities within fuzzgoat that crashed the application!
+</p>
+
+### For using stdin methods (not used in this guide)
+```
+# fuzz using stdin
+./afl-fuzz -i testcase_dir -o findings_dir -- /path/to/tested/program
+
+# fuzz using file path
+./afl-fuzz -i testcase_dir  -o findings_dir  /path/to/tested/program @@
+```
