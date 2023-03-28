@@ -116,7 +116,7 @@ mkdir out
 </p>
 
 ```
-cp /bin/ps .../in/
+dd if=/dev/urandom of=.../in/random.input bs=1 count=1
 ```
 <p>
  
