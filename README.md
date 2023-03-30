@@ -9,7 +9,7 @@ Fuzzing is looking for behavior in a program that resembles a crash, halt, error
 ## Why Fuzz Applications?
 
 <p>
- Fuzzing applications allows us to find vulnerabiliies within an applications. Hackers use fuzzing to find zero day exploits and blue hats use fuzzing to determinet the scope of vulnerabilities to process. Ethical Hackers can can also use fuzzing in bug bounties to find things that need to be patched.
+ Fuzzing applications allows us to find vulnerabilities within an application. Hackers use fuzzing to find zero-day exploits and blue hats use fuzzing to determine the scope of vulnerabilities to process. Ethical Hackers can also use fuzzing in bug bounties to find things that need to be patched.
 </p>
 
 
@@ -21,7 +21,7 @@ AFL is a fuzzer that uses a seed input that is connected to the program we are f
 
 ## How to use AFL fuzzer
 
-### Prequisites
+### Prerequisites 
 
 <p> First you need to install the compilers</p>
 
@@ -79,18 +79,18 @@ cd fuzzgoat/
 
 ### Set up or compiler
 <p> 
-  To use a non default compiler, we need to assign the compiler to an enviroment variable that Fuzzgoat can access.
+  To use a non default compiler, we need to assign the compiler to an environment variable that Fuzzgoat can access.
   
 We will use afl-clang-fast as the compiler. AFL compilers are like basic compilers like GCC but with modifications that allow AFL to talk with the target application while it is running to generate new inputs and discover new code paths through the input seed. This process is called instrumentation.
 </p>
 
-### Setting enviroment variable for compiler afl-clang-fast
+### Setting environment variable for compiler afl-clang-fast
 ```
 export CC=afl-clang-fast
 ```
 ### Configure fuzzgoat as a binary
 <p>
-After cloning the respository we need to compile that application into a binary. Inside the fuzzgoat directory run the code below
+After cloning the repository we need to compile that application into a binary. Inside the fuzzgoat directory run the code below
 </p>
 
 ```
@@ -99,10 +99,10 @@ make
 ### Defining the seed input files
 
 <p> 
- AFL uses the seed input file to input commands into the target application. The seed input files allows for AFL to mutate its commands to find new file paths within the targeth application to exploit.
+ AFL uses the seed input file to input commands into the target application. The seed input files allows for AFL to mutate its commands to find new file paths within the target application to exploit.
 </p>
 
-<p> Start with creating and input file that will hold our test cases produced by AFL fuzz. Also create the output files that contains subdirectories: crashes for crashed results, hangs for results that causes the application to hang and a queue directory that holds results that AFL has not tested against the applicaiton. 
+<p> Start with creating and input file that will hold our test cases produced by AFL fuzz. Also create the output files that contains subdirectories: crashes for crashed results, hangs for results that causes the application to hang and a queue directory that holds results that AFL has not tested against the application. 
 </p>
 
 ```
@@ -123,7 +123,7 @@ dd if=/dev/urandom of=.../in/random.input bs=1 count=1
 Now the in folder should have a copy of your ps binary and ready to be input against the target application
 </p>
 
-### To fuzz the applicatoin
+### To fuzz the application
 <p>
  Key:
  -i = specifies the directory from which the seed cases are run  (can be named anything)
@@ -142,12 +142,12 @@ afl-fuzz -i in -o out -- ./fuzzgoat @@
 <p>
 After running the application watch if for a couple of minutes and then CTRL + C
  
-Navigate to /out/crashes and you should see a result similar to mine. I ran my results fo 5 minutes which could provide more or less results than you
+Navigate to /out/crashes and you should see a result similar to mine. I ran my results for 5 minutes which could provide more or less results than you
 </p>
 
 ![Results](https://github.com/sascha47/AFL_fuzz/blob/main/Crashes.PNG?raw=true)
 
-### How to rung your crashes
+### How to run your crashes
 
 <p>
  
