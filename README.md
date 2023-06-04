@@ -1,47 +1,44 @@
-# AFL-FUZZ 101
 
-## What Is Fuzzing?
-<p>
-Fuzzing is looking for behavior in a program that resembles a crash, halt, error or memory leakage by running invalid input into the application.
-</p>
+# A Comprehensive Introduction to AFL-Fuzz
 
+## Understanding Fuzzing
 
-## Why Fuzz Applications?
+Fuzzing is a dynamic software testing technique that involves providing invalid, unexpected, or random data to the inputs of a program. The primary aim of fuzzing is to trigger bugs that could potentially lead to program crashes, failure built-in code assertions, or potential memory leaks.
 
-<p>
- Fuzzing applications allows us to find vulnerabilities within an application. Hackers use fuzzing to find zero-day exploits and blue hats use fuzzing to determine the scope of vulnerabilities to process. Ethical Hackers can also use fuzzing in bug bounties to find things that need to be patched.
-</p>
+## The Importance of Fuzzing Applications
 
+Fuzzing applications is an essential aspect of software security as it allows the discovery of vulnerabilities within an application. Attackers often use fuzzing techniques to identify zero-day exploits, while security professionals employ fuzzing to ascertain the extent of potential vulnerabilities. Ethical hackers also utilize fuzzing in bug bounty programs to discover elements within the application that require patching.
 
-## American Fuzzy Lop or AFL fuzz
+## Introduction to American Fuzzy Lop (AFL)
 
-<p>
-AFL is a fuzzer that uses a seed input that is connected to the program we are fuzzing. The seed input allows for AFL to potentially fuzz the program for new test cases which could lead to new path discoveries. 
-</p>
+American Fuzzy Lop (AFL) is a powerful fuzzer employed for finding potential security vulnerabilities in software. AFL operates by using a seed input which is linked to the program under test. The seed input allows AFL to generate new test cases which could lead to discovering new paths and potential vulnerabilities within the program.
 
-## How to use AFL fuzzer
+## Implementing AFL Fuzz
 
 ### Prerequisites 
 
-<p> First you need to install the compilers</p>
+Before you begin, it is crucial to install the necessary compilers:
 
-```
+```shell
 sudo apt install gcc
 sudo apt install clang
 ```
-  
-### Install AFL
+### AFL Installation Process
 
-```
+To install AFL, execute the following commands:
+
+```shell
 wget http://lcamtuf.coredump.cx/afl/releases/afl-latest.tgz
 tar -xzvf afl-latest.tgz
 cd afl-2.52b/
 make
 sudo make install
 ```
-### Default compiler is slow, leverage built in complier LLVM for faster fuzzing
+### Leveraging LLVM for Efficient Fuzzing
 
-```
+The default compiler might not provide optimal performance for fuzzing. Therefore, leveraging the built-in compiler LLVM can result in faster fuzzing. To do this, execute the following commands:
+
+```shell
 cd afl-2.51b/llvm_mode/
 sudo apt-get install llvm-dev llvm
 make
@@ -49,130 +46,90 @@ cd ..
 make
 sudo make install
 ```
+Congratulations, you have successfully installed AFL Fuzz and LLVM!
 
-### Congratulations, AFL Fuzz and LLVM are installed
+### Hands-On Practice with Fuzzgoat
 
-### Practice Project
-<p>
-  In this project we will be fuzzing an intentionally vulnerable program called "Fuzzgoat"
-</p>
-  
-### Installing fuzzgoat
+In this section, we will use an intentionally vulnerable program named "Fuzzgoat" to understand the practical application of AFL Fuzz.
 
-<p>
-  First makes sure you have git installed 
-</p>
+### Installing Fuzzgoat
 
- <p>
- For Debian Distros
- </p>
- 
- ```
- sudo apt install git
- ```
- <p>Then install fuzzgoat</p>
-  
- ```
-  git clone https://github.com/fuzzstati0n/fuzzgoat
-cd fuzzgoat/
- ```
+Before you begin, ensure that git is installed on your system. For Debian based distributions, you can install git with the following command:
 
-### Set up or compiler
-<p> 
-  To use a non default compiler, we need to assign the compiler to an environment variable that Fuzzgoat can access.
-  
-We will use afl-clang-fast as the compiler. AFL compilers are like basic compilers like GCC but with modifications that allow AFL to talk with the target application while it is running to generate new inputs and discover new code paths through the input seed. This process is called instrumentation.
-</p>
-
-### Setting environment variable for compiler afl-clang-fast
+```shell
+sudo apt install git
 ```
+Next, install Fuzzgoat by cloning the GitHub repository:
+
+```shell
+git clone https://github.com/fuzzstati0n/fuzzgoat
+cd fuzzgoat/
+```
+### Configuring the Compiler
+
+By default, Fuzzgoat uses a basic compiler. However, we will be using afl-clang-fast as our compiler for this exercise. AFL compilers are similar to basic compilers but with added functionality that allows AFL to interact with the target application while it's running. This interaction helps in generating new inputs and discovering new code paths through the seed input, a process referred to as 'instrumentation'.
+
+### Setting the Environment Variable for the Compiler afl-clang-fast
+
+To set the compiler, assign the compiler to an environment variable that Fuzzgoat can access:
+
+```shell
 export CC=afl-clang-fast
 ```
-### Configure fuzzgoat as a binary
-<p>
-After cloning the repository we need to compile that application into a binary. Inside the fuzzgoat directory run the code below
-</p>
+### Compiling Fuzzgoat into a Binary
 
-```
+After cloning the Fuzzgoat repository, the next step is to compile the application into a binary. Inside the Fuzzgoat directory, execute the following command:
+
+```shell
 make
 ```
-### Defining the seed input files
+### Defining Seed Input Files
 
-<p> 
- AFL uses the seed input file to input commands into the target application. The seed input files allows for AFL to mutate its commands to find new file paths within the target application to exploit.
-</p>
+AFL uses seed input files to feed commands into the
 
-<p> Start with creating and input file that will hold our test cases produced by AFL fuzz. Also create the output files that contains subdirectories: crashes for crashed results, hangs for results that causes the application to hang and a queue directory that holds results that AFL has not tested against the application. 
-</p>
+target application. The seed input files allow AFL to mutate its commands to discover new paths within the target application for potential exploitation.
 
-```
+Start by creating an input directory to hold our test cases produced by AFL, and an output directory to store the results. The output directory will contain subdirectories for different result types: `crashes` for results that caused the application to crash, `hangs` for results that caused the application to hang, and a `queue` directory that holds results that AFL has yet to test against the application. 
+
+```shell
 mkdir in
 mkdir out
-
 ```
-### Before fuzzing the application
-<p>
- We need to create an input seed that connects to our target application and is used by AFL Fuzz to  mutate commands within the target application to create new test cases. To do this we can add an binary to the in folder
-</p>
+### Preparing for Fuzzing
 
-```
+Before beginning the fuzzing process, we need to create a seed input that connects to our target application. This seed input is used by AFL Fuzz to mutate commands within the target application, thus creating new test cases. You can add a binary to the `in` directory with the following command:
+
+```shell
 dd if=/dev/urandom of=.../in/random.input bs=1 count=1
 ```
-<p>
- 
-Now the in folder should have a copy of your ps binary and ready to be input against the target application
-</p>
+After executing the above command, the `in` directory should contain a copy of your binary, ready to be input against the target application.
 
-### To fuzz the application
-<p>
- Key:
- -i = specifies the directory from which the seed cases are run  (can be named anything)
- 
- -o = specifies the the directory where AFL stores the results for crashes, hangs and queues
- 
- -- = seperates the AFL flags on the left from where the target is run on the right
- 
-@@ = This is where AFL fuzzes the application by inserts the test seed input file here. STDIN can also be used instead of @@
-</p>
+### Executing Fuzzing
 
-### Run the applicatoin
-```
+To fuzz the application, execute the following command:
+
+```shell
 afl-fuzz -i in -o out -- ./fuzzgoat @@
 ```
-<p>
-After running the application watch if for a couple of minutes and then CTRL + C
- 
-Navigate to /out/crashes and you should see a result similar to mine. I ran my results for 5 minutes which could provide more or less results than you
-</p>
+In this command:
 
-![Results](https://github.com/sascha47/AFL_fuzz/blob/main/Crashes.PNG?raw=true)
+- `-i` specifies the directory from which the seed cases are fetched (this can be any directory of your choice)
+- `-o` specifies the directory where AFL stores the results for crashes, hangs, and queues
+- `--` separates the AFL flags on the left from where the target is run on the right
+- `@@` is where AFL inserts the test seed input file for fuzzing the application. Alternatively, you can use STDIN instead of `@@`
 
-### How to run your crashes
+After running the above command, observe the application for a few minutes and then terminate the process with `CTRL + C`.
 
-<p>
- 
-These crashes in the crashes directory are what was used by AFL FUZZ in the instrumentation or seed input to crash the binary. To run crash against your application or fuzzgoat in this instance use the non standard input method below
- 
-</p>
-  
-#### Non StndInput
-```
+Navigate to the `out/crashes` directory, and you should see results similar to the ones in the provided image. Please note that the results may vary based on the duration for which you ran the fuzzing process.
+
+### Analyzing the Results
+
+The crashes located in the `crashes` directory were used by AFL Fuzz in the instrumentation or seed input process to crash the binary. To run a crash against your application (Fuzzgoat in this instance), use the following command:
+
+```shell
 ./fuzzgoat  aflout/crashes/id:000000,sig:06,src:000000,op:havoc,rep:16
 ```
+Please refer to the provided image for the expected results of the above command.
 
-#### Result for nonstnd input
-![Result](https://github.com/sascha47/AFL_fuzz/blob/main/NON_stnd_input.PNG?raw=true)
+Congratulations! You have successfully installed AFL Fuzz, the afl-clang-fast compiler, created seed inputs, and discovered vulnerabilities within Fuzzgoat that caused the application to crash.
 
-<p> 
- 
-Congratuations, you have Installed AFL fuzz, the gcc-clang-fast compliers, created input seeds and found vulnerabilities within fuzzgoat that crashed the application!
-</p>
-
-### For using stdin methods (not used in this guide)
-```
-# fuzz using stdin
-./afl-fuzz -i testcase_dir -o findings_dir -- /path/to/tested/program
-
-# fuzz using file path
-./afl-fuzz -i testcase_dir  -o findings_dir  /path/to/tested/program @@
-```
